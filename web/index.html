@@ -93,10 +93,10 @@
 
     <div class="container">
         <h1>📶 Mahigo PassView</h1>
-        <p class="subtitle">View saved WiFi profiles & passwords synced from your Linux environment.</p>
+        <p class="subtitle">View saved WiFi profiles & passwords powered by the Kusum PassView API.</p>
         
         <div id="app-content">
-            <p>Loading network profiles...</p>
+            <p>Connecting to Kusum PassView API...</p>
         </div>
     </div>
 
@@ -104,14 +104,14 @@
         async function loadProfiles() {
             const container = document.getElementById('app-content');
             try {
-                // Fetch the exported data structure from the static directory
-                const response = await fetch('data.json');
-                if (!response.ok) throw new Error('Data file missing');
+                // Querying the dynamic serverless backend rewrite endpoint
+                const response = await fetch('/api/passview');
+                if (!response.ok) throw new Error('API Execution Error');
                 
                 const networks = await response.json();
                 
                 if (networks.length === 0) {
-                    container.innerHTML = `<div class="warning">No profiles found in data.json logs.</div>`;
+                    container.innerHTML = `<div class="warning">No profiles found via Kusum PassView API.</div>`;
                     return;
                 }
 
@@ -134,8 +134,7 @@
             } catch (error) {
                 container.innerHTML = `
                     <div class="warning">
-                        <strong>Error loading profiles:</strong> Make sure <code>data.json</code> exists in your root folder 
-                        and contains valid network information.
+                        <strong>Error connecting to backend:</strong> Failed to retrieve dynamic network payloads from the <code>Kusum PassView API</code> engine.
                     </div>`;
             }
         }
