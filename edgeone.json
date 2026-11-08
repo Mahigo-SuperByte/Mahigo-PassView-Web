@@ -1,14 +1,9 @@
 {
   "outputDirectory": "../build",
-  "cloudFunctions": {
-    "python": {
-      "maxDuration": 30
-    }
-  },
   "rewrites": [
     {
       "source": "/api/passview",
-      "destination": "/api/passview.py"
+      "destination": "/api/passview.js"
     }
   ]
 }
