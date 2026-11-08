@@ -1,4 +1,4 @@
-# 📶 Mahigo PassView
+# 📶 Mahigo PassView Web
 
 A clean, responsive web interface inspired by Streamlit to securely view and manage saved Wi-Fi profiles and passwords extracted from your Linux environment.
 
