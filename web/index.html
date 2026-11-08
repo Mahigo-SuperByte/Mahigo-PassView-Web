@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mahigo PassView</title>
+    <style>
+        :root {
+            --bg-color: #0e1117;
+            --card-bg: #161b22;
+            --text-color: #c9d1d9;
+            --accent-color: #ff4b4b;
+            --code-bg: #21262d;
+            --border-color: #30363d;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .subtitle {
+            color: #8b949e;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .warning {
+            background-color: rgba(255, 75, 75, 0.1);
+            border: 1px solid var(--accent-color);
+            color: #ff7b72;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .profile-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .profile-row {
+            display: flex;
+            align-items: center;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 1rem;
+            border-radius: 0.5rem;
+        }
+
+        .profile-name {
+            font-weight: bold;
+            flex: 1;
+            color: #ffffff;
+        }
+
+        .divider {
+            color: var(--border-color);
+            margin: 0 1rem;
+        }
+
+        code {
+            background-color: var(--code-bg);
+            color: #ff7b72;
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.25rem;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>📶 Mahigo PassView</h1>
+        <p class="subtitle">View saved WiFi profiles & passwords synced from your Linux environment.</p>
+        
+        <div id="app-content">
+            <p>Loading network profiles...</p>
+        </div>
+    </div>
+
+    <script>
+        async function loadProfiles() {
+            const container = document.getElementById('app-content');
+            try {
+                // Fetch the exported data structure from the static directory
+                const response = await fetch('data.json');
+                if (!response.ok) throw new Error('Data file missing');
+                
+                const networks = await response.json();
+                
+                if (networks.length === 0) {
+                    container.innerHTML = `<div class="warning">No profiles found in data.json logs.</div>`;
+                    return;
+                }
+
+                container.innerHTML = '';
+                const listContainer = document.createElement('div');
+                listContainer.className = 'profile-list';
+
+                networks.forEach(net => {
+                    const row = document.createElement('div');
+                    row.className = 'profile-row';
+                    row.innerHTML = `
+                        <span class="profile-name">${net.name}</span>
+                        <span class="divider">|</span>
+                        <code>${net.password}</code>
+                    `;
+                    listContainer.appendChild(row);
+                });
+                container.appendChild(listContainer);
+
+            } catch (error) {
+                container.innerHTML = `
+                    <div class="warning">
+                        <strong>Error loading profiles:</strong> Make sure <code>data.json</code> exists in your root folder 
+                        and contains valid network information.
+                    </div>`;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadProfiles);
+    </script>
+</body>
+</html>
